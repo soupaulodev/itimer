@@ -60,29 +60,27 @@ export const HistoryList = styled.div`
   }
 `;
 
-export const Status = styled.span`
-  span {
-    font-size: 2rem;
-  }
+const STATUS_COLORS = {
+  yellow: "yellow-500",
+  red: "red-500",
+  green: "green-500",
+} as const;
+
+interface StatusProps {
+  statusColor: keyof typeof STATUS_COLORS;
+}
+
+export const Status = styled.span<StatusProps>`
   display: flex;
   align-items: center;
   gap: 0.5rem;
 
-  &.green {
-    span {
-      color: ${(props) => props.theme.colors["green-500"]};
-    }
-  }
-
-  &.red {
-    span {
-      color: ${(props) => props.theme.colors["red-500"]};
-    }
-  }
-
-  &.yellow {
-    span {
-      color: ${(props) => props.theme.colors["yellow-500"]};
-    }
+  &::before {
+    content: "";
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 9999px;
+    background: ${(props) =>
+      props.theme.colors[STATUS_COLORS[props.statusColor]]};
   }
 `;
