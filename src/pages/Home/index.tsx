@@ -43,18 +43,25 @@ export function Home() {
       minutesAmount: 0,
     },
   });
-  const isSubmitDisabled = !watch("task") || !watch("minutesAmount");
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
 
+  // Será execultado sempre que activeCycle mudar
   useEffect(() => {
+    let interval: number;
+
     if (activeCycle) {
-      setInterval(() => {
+      interval = setInterval(() => {
         setAmountSecondsPassed(
           differenceInSeconds(new Date(), activeCycle.startDate)
         );
       }, 1000);
     }
+
+    // Quando o componente for desmontado, limpar o intervalo
+    return () => {
+      clearInterval(interval);
+    };
   }, [activeCycle]);
 
   function handleCreateNewCycle(data: NewCycleFormData) {
@@ -67,6 +74,7 @@ export function Home() {
 
     setCycles((state) => [...state, newCycle]);
     setActiveCycleId(newCycle.id);
+    setAmountSecondsPassed(0);
 
     reset();
   }
@@ -79,6 +87,8 @@ export function Home() {
 
   const minutes = String(minutesAmount).padStart(2, "0");
   const seconds = String(secondsAmount).padStart(2, "0");
+
+  const isSubmitDisabled = !watch("task") || !watch("minutesAmount");
 
   return (
     <HomeContainer>
